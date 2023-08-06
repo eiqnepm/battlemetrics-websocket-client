@@ -1,5 +1,4 @@
-import _ from "lodash";
-import uuid from "uuid/v1";
+import { v1 as uuid } from "uuid";
 import { EventEmitter } from "events";
 import WebSocket from "ws";
 
@@ -128,7 +127,7 @@ export class WSClient extends EventEmitter {
         JSON.stringify({
           i: uuid(),
           t: "join",
-          p: [channel]
+          p: [channel],
         })
       );
     }
@@ -142,7 +141,7 @@ export class WSClient extends EventEmitter {
         JSON.stringify({
           i: uuid(),
           t: "leave",
-          p: [channel]
+          p: [channel],
         })
       );
     }
@@ -159,8 +158,8 @@ export class WSClient extends EventEmitter {
           t: "filter",
           p: {
             type,
-            filter
-          }
+            filter,
+          },
         })
       );
     }
@@ -215,8 +214,8 @@ export class WSClient extends EventEmitter {
                 t: "filter",
                 p: {
                   type,
-                  filter
-                }
+                  filter,
+                },
               })
             );
           });
@@ -225,7 +224,7 @@ export class WSClient extends EventEmitter {
             JSON.stringify({
               i: uuid(),
               t: "join",
-              p: Array.from(this.channels)
+              p: Array.from(this.channels),
             })
           );
 
@@ -241,8 +240,8 @@ export class WSClient extends EventEmitter {
                 t: "replay",
                 p: {
                   channels: Array.from(this.channels),
-                  start: this.lastMessage
-                }
+                  start: this.lastMessage,
+                },
               })
             );
           } else {
@@ -264,7 +263,7 @@ export class WSClient extends EventEmitter {
           JSON.stringify({
             i: authId,
             t: "auth",
-            p: token
+            p: token,
           })
         );
 
@@ -299,7 +298,7 @@ export class WSClient extends EventEmitter {
   private onMessage = (e: { data: any }) => {
     this.lastPing = Date.now();
 
-    if (_.isString(e.data)) {
+    if (typeof e.data === "string") {
       const msg = JSON.parse(e.data) as IRTMessage;
       if (msg.i && msg.t !== "error" && msg.t !== "ack") {
         this.lastMessage = msg.i;
@@ -329,7 +328,10 @@ export class WSClient extends EventEmitter {
       this.setupConnection();
     }, this.retryDelay * 1000);
 
-    this.retryDelay = Math.min(60, this.retryDelay + _.random(5, 10));
+    this.retryDelay = Math.min(
+      60,
+      this.retryDelay + (Math.floor(Math.random() * 6) + 5)
+    );
   };
 
   private monitorConnection() {
@@ -340,7 +342,7 @@ export class WSClient extends EventEmitter {
         this.ws.send(
           JSON.stringify({
             i: uuid(),
-            t: "ping"
+            t: "ping",
           })
         );
       }
