@@ -1,0 +1,40 @@
+{
+  "dependencies": {
+    "@types/events": {
+      "version": "3.0.0",
+      "dev": true
+    },
+    "@types/lodash": {
+      "version": "4.14.123",
+      "dev": true
+    },
+    "@types/node": {
+      "version": "11.13.9",
+      "dev": true
+    },
+    "@types/uuid": {
+      "version": "3.4.4",
+      "dev": true
+    },
+    "@types/ws": {
+      "version": "6.0.1",
+      "dev": true
+    },
+    "async-limiter": {
+      "version": "1.0.0"
+    },
+    "lodash": {
+      "version": "4.17.11"
+    },
+    "typescript": {
+      "version": "3.4.5",
+      "dev": true
+    },
+    "uuid": {
+      "version": "3.3.2"
+    },
+    "ws": {
+      "version": "7.0.0"
+    }
+  }
+}
