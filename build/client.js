@@ -3,8 +3,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const lodash_1 = __importDefault(require("lodash"));
-const v1_1 = __importDefault(require("uuid/v1"));
+exports.WSClient = void 0;
+const uuid_1 = require("uuid");
 const events_1 = require("events");
 const ws_1 = __importDefault(require("ws"));
 class WSClient extends events_1.EventEmitter {
@@ -26,30 +26,30 @@ class WSClient extends events_1.EventEmitter {
                     if (this.ws && this.ws.readyState === ws_1.default.OPEN) {
                         this.filters.forEach((filter, type) => {
                             this.ws.send(JSON.stringify({
-                                i: v1_1.default(),
+                                i: (0, uuid_1.v1)(),
                                 t: "filter",
                                 p: {
                                     type,
-                                    filter
-                                }
+                                    filter,
+                                },
                             }));
                         });
                         this.ws.send(JSON.stringify({
-                            i: v1_1.default(),
+                            i: (0, uuid_1.v1)(),
                             t: "join",
-                            p: Array.from(this.channels)
+                            p: Array.from(this.channels),
                         }));
                         if (this.lastMessage &&
                             prevLastConnected &&
                             Date.now() - prevLastConnected < this.replayMaxTime) {
                             console.log("Will replay");
                             this.ws.send(JSON.stringify({
-                                i: v1_1.default(),
+                                i: (0, uuid_1.v1)(),
                                 t: "replay",
                                 p: {
                                     channels: Array.from(this.channels),
-                                    start: this.lastMessage
-                                }
+                                    start: this.lastMessage,
+                                },
                             }));
                         }
                         else {
@@ -61,11 +61,11 @@ class WSClient extends events_1.EventEmitter {
                     }
                 };
                 if (token) {
-                    const authId = v1_1.default();
+                    const authId = (0, uuid_1.v1)();
                     this.ws.send(JSON.stringify({
                         i: authId,
                         t: "auth",
-                        p: token
+                        p: token,
                     }));
                     const onMsg = (e) => {
                         const msg = JSON.parse(e.data);
@@ -93,7 +93,7 @@ class WSClient extends events_1.EventEmitter {
         };
         this.onMessage = (e) => {
             this.lastPing = Date.now();
-            if (lodash_1.default.isString(e.data)) {
+            if (typeof e.data === "string") {
                 const msg = JSON.parse(e.data);
                 if (msg.i && msg.t !== "error" && msg.t !== "ack") {
                     this.lastMessage = msg.i;
@@ -111,7 +111,7 @@ class WSClient extends events_1.EventEmitter {
                 this.reconnectTimeout = undefined;
                 this.setupConnection();
             }, this.retryDelay * 1000);
-            this.retryDelay = Math.min(60, this.retryDelay + lodash_1.default.random(5, 10));
+            this.retryDelay = Math.min(60, this.retryDelay + (Math.floor(Math.random() * 6) + 5));
         };
         this.replayMaxTime = replayMaxTime;
         this.getAccessToken = getAccessToken;
@@ -122,9 +122,9 @@ class WSClient extends events_1.EventEmitter {
         this.channels.add(channel);
         if (this.ws && this.ws.readyState === ws_1.default.OPEN) {
             this.ws.send(JSON.stringify({
-                i: v1_1.default(),
+                i: (0, uuid_1.v1)(),
                 t: "join",
-                p: [channel]
+                p: [channel],
             }));
         }
     }
@@ -132,9 +132,9 @@ class WSClient extends events_1.EventEmitter {
         this.channels.delete(channel);
         if (this.ws && this.ws.readyState === ws_1.default.OPEN) {
             this.ws.send(JSON.stringify({
-                i: v1_1.default(),
+                i: (0, uuid_1.v1)(),
                 t: "leave",
-                p: [channel]
+                p: [channel],
             }));
         }
     }
@@ -144,12 +144,12 @@ class WSClient extends events_1.EventEmitter {
         this.filters.set(type, filter);
         if (this.ws && this.ws.readyState === ws_1.default.OPEN) {
             this.ws.send(JSON.stringify({
-                i: v1_1.default(),
+                i: (0, uuid_1.v1)(),
                 t: "filter",
                 p: {
                     type,
-                    filter
-                }
+                    filter,
+                },
             }));
         }
     }
@@ -190,8 +190,8 @@ class WSClient extends events_1.EventEmitter {
         this.monitorInterval = setTimeout(() => {
             if (this.ws && this.ws.readyState === ws_1.default.OPEN) {
                 this.ws.send(JSON.stringify({
-                    i: v1_1.default(),
-                    t: "ping"
+                    i: (0, uuid_1.v1)(),
+                    t: "ping",
                 }));
             }
             if (this.lastPing && this.lastPing < Date.now() - 60000) {

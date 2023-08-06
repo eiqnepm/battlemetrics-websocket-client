@@ -21,11 +21,11 @@ const filter = {
     tagTypeMode: "and",
     tags: {},
     types: {
-        whitelist: ["playerMessage"]
-    }
+        whitelist: ["playerMessage"],
+    },
 };
 // Filter down to only playerMessages
 conn.filter("ACTIVITY", filter);
-conn.on("message", msg => {
+conn.on("message", (msg) => {
     console.log("msg", msg);
 });
